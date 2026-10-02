@@ -66,6 +66,8 @@ td{padding:12px 10px;vertical-align:top}
 .rv-amt{min-width:54px;text-align:right;font-size:.9rem;font-weight:600;color:#c0392b}
 .rv-del{border:none;background:none;font-size:1.05rem;cursor:pointer;padding:4px 2px}
 .rv-total{display:flex;justify-content:space-between;align-items:center;border-top:2px solid #8a3d0f;padding-top:12px;margin-top:6px;font-size:1.15rem;font-weight:700;color:#8a3d0f}
+.rv-notice{background:#fff8e1;border:1px solid #f3d9a4;color:#7a4a12;border-radius:10px;padding:10px 12px;margin-top:12px;font-size:.86rem;line-height:1.7}
+.rv-notice b{color:#d5641f}
 .rv-actions{display:flex;gap:10px;margin-top:16px}
 .rv-back{flex:1;padding:14px;background:#f5e8dd;color:#555;border:none;border-radius:12px;font-size:1rem;cursor:pointer}
 .rv-submit{flex:1.4;padding:14px;background:#d5641f;color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer}
@@ -157,6 +159,7 @@ td{padding:12px 10px;vertical-align:top}
     <div class="rv-name" id="rvName"></div>
     <div class="rv-list" id="rvList"></div>
     <div class="rv-total"><span>總計</span><span id="rvTotal">$0</span></div>
+    <div class="rv-notice">所有品項皆於款項收齊後才會送單製作，還請大家配合於<b>[結單後三天內]</b>完成匯款，以利我們後續作業。<br>如有任何問題，歡迎隨時敲敲小幫手協助～謝謝大家的配合！💛</div>
     <div class="rv-actions">
       <button class="rv-back" onclick="closeReview()">← 繼續選購</button>
       <button class="rv-submit" id="rvSubmit" onclick="confirmSubmit()">✅ 確認送出</button>

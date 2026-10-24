@@ -101,24 +101,26 @@ td{padding:12px 10px;vertical-align:top}
 .leaf:nth-child(3n+1) svg path{fill:url(#lf1)}
 .leaf:nth-child(3n+2) svg path{fill:url(#lf2)}
 .leaf:nth-child(3n) svg path{fill:url(#lf3)}
-.wind{position:absolute;left:-10vw;width:300px;height:60px;pointer-events:none;opacity:0;animation:windFlow linear infinite;will-change:transform}
+/* 風痕：固定在那一帶，從左到右畫出、捲兩圈、再從尾端消散；120 秒一陣 */
+.wind{position:absolute;left:3vw;width:94vw;height:70px;pointer-events:none;opacity:0;animation:windFlow linear infinite}
 .wind svg{width:100%;height:100%;display:block;overflow:visible}
-.wind .wp{stroke-dasharray:520;stroke-dashoffset:520;animation:windDraw linear infinite}
-@keyframes windFlow{0%{transform:translate(0,0) rotate(8deg);opacity:0}0.6%{opacity:.95}6.2%{opacity:.8}7%{transform:translate(55vw,10vh) rotate(8deg);opacity:0}100%{transform:translate(55vw,10vh) rotate(8deg);opacity:0}}
-@keyframes windDraw{0%{stroke-dashoffset:520}4%{stroke-dashoffset:0}7%{stroke-dashoffset:-520}100%{stroke-dashoffset:-520}}
-.wind:nth-child(7){top:16vh;animation-duration:120s;animation-delay:3s}.wind:nth-child(7) .wp{animation-duration:120s;animation-delay:3s}
-.wind:nth-child(8){top:58vh;animation-duration:120s;animation-delay:4.5s;width:240px}.wind:nth-child(8) .wp{animation-duration:120s;animation-delay:4.5s}
+.wind .wp{stroke-dasharray:1300;stroke-dashoffset:1300;animation:windDraw linear infinite}
+@keyframes windFlow{0%{opacity:0}0.5%{opacity:.95}6.5%{opacity:.85}7%{opacity:0}100%{opacity:0}}
+@keyframes windDraw{0%{stroke-dashoffset:1300}4%{stroke-dashoffset:0}7%{stroke-dashoffset:-1300}100%{stroke-dashoffset:-1300}}
+.wind:nth-child(7){top:18vh;animation-duration:120s;animation-delay:3s}.wind:nth-child(7) .wp{animation-duration:120s;animation-delay:3s}
+.wind:nth-child(8){top:56vh;animation-duration:120s;animation-delay:4.5s}.wind:nth-child(8) .wp{animation-duration:120s;animation-delay:4.5s}
 /* 楓葉落在「送出訂單」按鈕上緣（當作地面），一片片躺著堆起來 */
 .sub-wrap{position:relative}
 .pile{position:absolute;left:14px;right:14px;top:14px;height:0;pointer-events:none;z-index:3;transition:opacity 1.6s}
 .pile.fade{opacity:0}
 .pile .pl{position:absolute;bottom:-2px;width:22px;height:24px;transition:transform .5s ease-out,bottom .5s ease-out}
 .pile .pl svg{width:100%;height:100%;display:block;filter:drop-shadow(0 1px 1px rgba(80,40,10,.3))}
-/* 風痕經過時，附近的楓葉與雪花被捲著走 */
-@keyframes sweptAway{0%{transform:translate(0,0) rotate(0deg);opacity:1}35%{transform:translate(28vw,-5vh) rotate(380deg);opacity:1}65%{transform:translate(58vw,3vh) rotate(720deg);opacity:.9}100%{transform:translate(112vw,-3vh) rotate(1040deg);opacity:0}}
-@keyframes sweptFlake{0%{transform:translate(0,0);opacity:1}40%{transform:translate(30vw,-4vh) rotate(200deg)}100%{transform:translate(112vw,-2vh) rotate(520deg);opacity:0}}
-.leaf>span.swept{animation:sweptAway 2.6s cubic-bezier(.3,.1,.6,1) forwards}
-.flake>span.swept{animation:sweptFlake 2.4s cubic-bezier(.3,.1,.6,1) forwards}
+/* 風一來：楓葉與雪花停止下落，順著風往右被送出畫面 */
+.leaf.hold,.flake.hold{animation-play-state:paused}
+@keyframes sweptAway{0%{transform:translate(0,0) rotate(0deg);opacity:1}30%{transform:translate(30vw,-4vh) rotate(300deg);opacity:1}60%{transform:translate(62vw,2vh) rotate(640deg);opacity:1}100%{transform:translate(118vw,-3vh) rotate(1000deg);opacity:0}}
+@keyframes sweptFlake{0%{transform:translate(0,0);opacity:1}40%{transform:translate(34vw,-3vh) rotate(180deg);opacity:1}100%{transform:translate(118vw,-2vh) rotate(480deg);opacity:0}}
+.leaf>span.swept{animation:sweptAway 2.8s cubic-bezier(.25,.1,.55,1) forwards}
+.flake>span.swept{animation:sweptFlake 2.6s cubic-bezier(.25,.1,.55,1) forwards}
 @media (prefers-reduced-motion:reduce){.leaves{display:none}}
 
 @media (max-width:640px){
@@ -139,7 +141,7 @@ td{padding:12px 10px;vertical-align:top}
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="lf1" cx="50%" cy="48%" r="60%"><stop offset="0" stop-color="#ef9a2a"/><stop offset=".55" stop-color="#d86f1c"/><stop offset="1" stop-color="#a44a16"/></radialGradient><radialGradient id="lf2" cx="50%" cy="48%" r="60%"><stop offset="0" stop-color="#d9693a"/><stop offset=".5" stop-color="#b53f27"/><stop offset="1" stop-color="#7d261c"/></radialGradient><radialGradient id="lf3" cx="50%" cy="48%" r="62%"><stop offset="0" stop-color="#e0b14a"/><stop offset=".5" stop-color="#c38a2c"/><stop offset="1" stop-color="#8c5d1b"/></radialGradient></defs></svg>
-<div class="leaves" aria-hidden="true"><div class="leaf"><span><svg viewBox="2868 900 3844 4216" xmlns="http://www.w3.org/2000/svg"><path d="m4800 900-338 661c-38 68-107 62-176 24l-244-127 182 968c38 178-86 178-147 100l-424-476-68 240c-8 32-43 66-96 58l-539-113 141 514c30 114 54 162-31 192l-192 90 927 753c37 28 55 80 42 126l-81 266c319-37 604-93 924-117 28-2 76 44 75 78l-42 979h139l-24-978c-1-34 44-80 72-78 320 24 605 80 924 117l-81-266c-13-46 5-98 42-126l927-753-192-90c-85-30-61-78-31-192l141-514-539 113c-53 8-88-26-96-58l-68-240-424 476c-61 78-185 78-147-100l182-968-244 127c-69 38-138 44-176-24z"/></svg></span></div><div class="leaf"><span><svg viewBox="2868 900 3844 4216" xmlns="http://www.w3.org/2000/svg"><path d="m4800 900-338 661c-38 68-107 62-176 24l-244-127 182 968c38 178-86 178-147 100l-424-476-68 240c-8 32-43 66-96 58l-539-113 141 514c30 114 54 162-31 192l-192 90 927 753c37 28 55 80 42 126l-81 266c319-37 604-93 924-117 28-2 76 44 75 78l-42 979h139l-24-978c-1-34 44-80 72-78 320 24 605 80 924 117l-81-266c-13-46 5-98 42-126l927-753-192-90c-85-30-61-78-31-192l141-514-539 113c-53 8-88-26-96-58l-68-240-424 476c-61 78-185 78-147-100l182-968-244 127c-69 38-138 44-176-24z"/></svg></span></div><div class="leaf"><span><svg viewBox="2868 900 3844 4216" xmlns="http://www.w3.org/2000/svg"><path d="m4800 900-338 661c-38 68-107 62-176 24l-244-127 182 968c38 178-86 178-147 100l-424-476-68 240c-8 32-43 66-96 58l-539-113 141 514c30 114 54 162-31 192l-192 90 927 753c37 28 55 80 42 126l-81 266c319-37 604-93 924-117 28-2 76 44 75 78l-42 979h139l-24-978c-1-34 44-80 72-78 320 24 605 80 924 117l-81-266c-13-46 5-98 42-126l927-753-192-90c-85-30-61-78-31-192l141-514-539 113c-53 8-88-26-96-58l-68-240-424 476c-61 78-185 78-147-100l182-968-244 127c-69 38-138 44-176-24z"/></svg></span></div><div class="leaf"><span><svg viewBox="2868 900 3844 4216" xmlns="http://www.w3.org/2000/svg"><path d="m4800 900-338 661c-38 68-107 62-176 24l-244-127 182 968c38 178-86 178-147 100l-424-476-68 240c-8 32-43 66-96 58l-539-113 141 514c30 114 54 162-31 192l-192 90 927 753c37 28 55 80 42 126l-81 266c319-37 604-93 924-117 28-2 76 44 75 78l-42 979h139l-24-978c-1-34 44-80 72-78 320 24 605 80 924 117l-81-266c-13-46 5-98 42-126l927-753-192-90c-85-30-61-78-31-192l141-514-539 113c-53 8-88-26-96-58l-68-240-424 476c-61 78-185 78-147-100l182-968-244 127c-69 38-138 44-176-24z"/></svg></span></div><div class="flake"><span><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g stroke="#7fb6e3" stroke-width="9" stroke-linecap="round" fill="none"><path d="M50 6v88M12 28l76 44M12 72l76-44"/><path d="M50 6l-9 12M50 6l9 12M50 94l-9-12M50 94l9-12M12 28l15 1M12 28l1 15M88 72l-15-1M88 72l-1-15M12 72l15-1M12 72l1-15M88 28l-15 1M88 28l-1 15"/></g></svg></span></div><div class="flake"><span><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g stroke="#7fb6e3" stroke-width="9" stroke-linecap="round" fill="none"><path d="M50 6v88M12 28l76 44M12 72l76-44"/><path d="M50 6l-9 12M50 6l9 12M50 94l-9-12M50 94l9-12M12 28l15 1M12 28l1 15M88 72l-15-1M88 72l-1-15M12 72l15-1M12 72l1-15M88 28l-15 1M88 28l-1 15"/></g></svg></span></div><div class="wind"><svg viewBox="0 0 300 60" xmlns="http://www.w3.org/2000/svg"><path class="wp" fill="none" stroke="rgba(150,95,55,.6)" stroke-width="2.2" stroke-linecap="round" d="M6 40 C 50 18, 100 16, 150 30 C 180 38, 205 30, 198 18 C 191 8, 172 14, 178 28 C 186 44, 220 40, 250 30 C 268 24, 282 24, 294 28"/></svg></div><div class="wind"><svg viewBox="0 0 300 60" xmlns="http://www.w3.org/2000/svg"><path class="wp" fill="none" stroke="rgba(150,95,55,.6)" stroke-width="2.2" stroke-linecap="round" d="M6 40 C 50 18, 100 16, 150 30 C 180 38, 205 30, 198 18 C 191 8, 172 14, 178 28 C 186 44, 220 40, 250 30 C 268 24, 282 24, 294 28"/></svg></div></div>
+<div class="leaves" aria-hidden="true"><div class="leaf"><span><svg viewBox="2868 900 3844 4216" xmlns="http://www.w3.org/2000/svg"><path d="m4800 900-338 661c-38 68-107 62-176 24l-244-127 182 968c38 178-86 178-147 100l-424-476-68 240c-8 32-43 66-96 58l-539-113 141 514c30 114 54 162-31 192l-192 90 927 753c37 28 55 80 42 126l-81 266c319-37 604-93 924-117 28-2 76 44 75 78l-42 979h139l-24-978c-1-34 44-80 72-78 320 24 605 80 924 117l-81-266c-13-46 5-98 42-126l927-753-192-90c-85-30-61-78-31-192l141-514-539 113c-53 8-88-26-96-58l-68-240-424 476c-61 78-185 78-147-100l182-968-244 127c-69 38-138 44-176-24z"/></svg></span></div><div class="leaf"><span><svg viewBox="2868 900 3844 4216" xmlns="http://www.w3.org/2000/svg"><path d="m4800 900-338 661c-38 68-107 62-176 24l-244-127 182 968c38 178-86 178-147 100l-424-476-68 240c-8 32-43 66-96 58l-539-113 141 514c30 114 54 162-31 192l-192 90 927 753c37 28 55 80 42 126l-81 266c319-37 604-93 924-117 28-2 76 44 75 78l-42 979h139l-24-978c-1-34 44-80 72-78 320 24 605 80 924 117l-81-266c-13-46 5-98 42-126l927-753-192-90c-85-30-61-78-31-192l141-514-539 113c-53 8-88-26-96-58l-68-240-424 476c-61 78-185 78-147-100l182-968-244 127c-69 38-138 44-176-24z"/></svg></span></div><div class="leaf"><span><svg viewBox="2868 900 3844 4216" xmlns="http://www.w3.org/2000/svg"><path d="m4800 900-338 661c-38 68-107 62-176 24l-244-127 182 968c38 178-86 178-147 100l-424-476-68 240c-8 32-43 66-96 58l-539-113 141 514c30 114 54 162-31 192l-192 90 927 753c37 28 55 80 42 126l-81 266c319-37 604-93 924-117 28-2 76 44 75 78l-42 979h139l-24-978c-1-34 44-80 72-78 320 24 605 80 924 117l-81-266c-13-46 5-98 42-126l927-753-192-90c-85-30-61-78-31-192l141-514-539 113c-53 8-88-26-96-58l-68-240-424 476c-61 78-185 78-147-100l182-968-244 127c-69 38-138 44-176-24z"/></svg></span></div><div class="leaf"><span><svg viewBox="2868 900 3844 4216" xmlns="http://www.w3.org/2000/svg"><path d="m4800 900-338 661c-38 68-107 62-176 24l-244-127 182 968c38 178-86 178-147 100l-424-476-68 240c-8 32-43 66-96 58l-539-113 141 514c30 114 54 162-31 192l-192 90 927 753c37 28 55 80 42 126l-81 266c319-37 604-93 924-117 28-2 76 44 75 78l-42 979h139l-24-978c-1-34 44-80 72-78 320 24 605 80 924 117l-81-266c-13-46 5-98 42-126l927-753-192-90c-85-30-61-78-31-192l141-514-539 113c-53 8-88-26-96-58l-68-240-424 476c-61 78-185 78-147-100l182-968-244 127c-69 38-138 44-176-24z"/></svg></span></div><div class="flake"><span><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g stroke="#7fb6e3" stroke-width="9" stroke-linecap="round" fill="none"><path d="M50 6v88M12 28l76 44M12 72l76-44"/><path d="M50 6l-9 12M50 6l9 12M50 94l-9-12M50 94l9-12M12 28l15 1M12 28l1 15M88 72l-15-1M88 72l-1-15M12 72l15-1M12 72l1-15M88 28l-15 1M88 28l-1 15"/></g></svg></span></div><div class="flake"><span><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g stroke="#7fb6e3" stroke-width="9" stroke-linecap="round" fill="none"><path d="M50 6v88M12 28l76 44M12 72l76-44"/><path d="M50 6l-9 12M50 6l9 12M50 94l-9-12M50 94l9-12M12 28l15 1M12 28l1 15M88 72l-15-1M88 72l-1-15M12 72l15-1M12 72l1-15M88 28l-15 1M88 28l-1 15"/></g></svg></span></div><div class="wind"><svg viewBox="0 0 600 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path class="wp" fill="none" stroke="rgba(150,95,55,.6)" stroke-width="2.4" stroke-linecap="round" d="M4 50 C 60 20, 120 18, 180 36 C 215 48, 240 36, 232 22 C 224 10, 204 18, 212 34 C 222 54, 270 50, 320 40 C 370 30, 400 24, 440 36 C 465 44, 486 34, 478 22 C 470 12, 452 18, 460 32 C 470 50, 520 46, 596 40"/></svg></div><div class="wind"><svg viewBox="0 0 600 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path class="wp" fill="none" stroke="rgba(150,95,55,.6)" stroke-width="2.4" stroke-linecap="round" d="M4 50 C 60 20, 120 18, 180 36 C 215 48, 240 36, 232 22 C 224 10, 204 18, 212 34 C 222 54, 270 50, 320 40 C 370 30, 400 24, 440 36 C 465 44, 486 34, 478 22 C 470 12, 452 18, 460 32 C 470 50, 520 46, 596 40"/></svg></div></div>
 
 <div class="hdr">
   <h1>🍁 品項登記</h1>
@@ -455,26 +457,27 @@ function forceClose(){
   document.querySelectorAll('.leaf').forEach(l=>l.addEventListener('animationiteration', drop));
 })();
 
-// ===== 風一來，把路線附近的楓葉／雪花一起捲走；捲出畫面後那片會重新從上面慢慢飄下來 =====
+// ===== 風一來，畫面上的楓葉／雪花停住下落、順著風往右被送走；送出畫面後重新從上面飄 =====
 (function(){
   if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const winds=document.querySelectorAll('.wind'); if(!winds.length) return;
   function restart(el){ el.style.animation='none'; void el.offsetWidth; el.style.animation=''; }
-  function gust(wind){
-    const band=wind.getBoundingClientRect(); const vw=window.innerWidth||375;
+  function gust(){
+    const vw=window.innerWidth||375, vh=window.innerHeight||700;
     document.querySelectorAll('.leaf, .flake').forEach(el=>{
+      if(el.classList.contains('hold')) return;
       const r=el.getBoundingClientRect(); if(r.height===0) return;
-      const inBand = r.top > band.top-150 && r.top < band.top+170 && r.top>0 && r.top<window.innerHeight;
-      if(!inBand) return;
-      const span=el.querySelector('span'); if(!span || span.classList.contains('swept')) return;
-      const wait = Math.max(0, r.left/vw)*1600 + 300;          // 風由左往右掃，右邊的葉子晚一點被捲到
+      if(r.top < -40 || r.top > vh) return;                       // 只捲看得到的
+      const span=el.querySelector('span'); if(!span) return;
+      const wait = Math.max(0, r.left/vw)*1400 + 250;             // 風由左往右，左邊的先被捲到
       setTimeout(()=>{
-        span.classList.add('swept');
-        setTimeout(()=>{ span.classList.remove('swept'); restart(el); }, 2700);
+        el.classList.add('hold'); span.classList.add('swept');
+        setTimeout(()=>{ span.classList.remove('swept'); el.classList.remove('hold'); restart(el); }, 2900);
       }, wait);
     });
   }
-  winds.forEach(w=>{ w.addEventListener('animationstart', ()=>gust(w)); w.addEventListener('animationiteration', ()=>gust(w)); });
+  const w0=winds[0];
+  w0.addEventListener('animationstart', gust); w0.addEventListener('animationiteration', gust);
 })();
 </script>
 </body>

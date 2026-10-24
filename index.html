@@ -238,7 +238,8 @@ apiGet('items')
 
 
 const TAG_PREFIX='#tag:';
-function tagParts(t){ const s=String(t||'').trim(); if(!s) return null; const [zone,badge]=s.split(/[\/／]/).map(x=>x.trim()); return {zone, badge: badge||zone}; }
+const DEFAULT_BADGE={'入冬專區':'入冬必備'};   // I 欄只填「入冬專區」時，品名旁的小標籤自動用「入冬必備」
+function tagParts(t){ const s=String(t||'').trim(); if(!s) return null; const [zone,badge]=s.split(/[\/／]/).map(x=>x.trim()); return {zone, badge: badge||DEFAULT_BADGE[zone]||zone}; }
 function zoneList(){ const seen=[]; visibleItems().forEach(i=>{ const t=tagParts(i.tag); if(t && !seen.includes(t.zone)) seen.push(t.zone); }); return seen; }
 function isZone(c){ return typeof c==='string' && c.startsWith(TAG_PREFIX); }
 

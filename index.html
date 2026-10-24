@@ -220,7 +220,7 @@ function visibleItems(){
 }
 
 function buildTabs(){
-  const ORDER=['當月新品','當月特惠','熱門膠囊','眼睛專區','健腦益智','關節骨骼','感冒咳嗽(呼吸系統)','面部保養','零零嘴嘴','外用專區','婦科專區'];
+  const ORDER=['入冬專區','當月新品','當月特惠','熱門膠囊','眼睛專區','健腦益智','關節骨骼','感冒咳嗽(呼吸系統)','面部保養','零零嘴嘴','外用專區','婦科專區'];
   const rawCats=[...new Set(visibleItems().map(i=>i.category).filter(Boolean))];
   const zones=zoneList().map(z=>TAG_PREFIX+z);          // 有標籤的品項自動長出專區，排最前面
   const cats=[

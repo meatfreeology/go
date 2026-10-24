@@ -109,6 +109,12 @@ td{padding:12px 10px;vertical-align:top}
 .wind:nth-child(12){top:34vh;animation-duration:7s;animation-delay:4.5s;width:180px}
 .wind:nth-child(13){top:58vh;animation-duration:6s;animation-delay:8s;width:260px}
 .wind:nth-child(14){top:80vh;animation-duration:7.5s;animation-delay:12s;width:200px}
+/* 楓葉堆在「送出訂單」按鈕上 */
+.sub-wrap{position:relative}
+.pile{position:absolute;left:12px;right:12px;top:14px;height:34px;pointer-events:none;z-index:3;transition:opacity 1.6s}
+.pile.fade{opacity:0}
+.pile .pl{position:absolute;width:22px;height:24px;transition:transform .35s}
+.pile .pl svg{width:100%;height:100%;display:block;filter:drop-shadow(0 1px 1px rgba(80,40,10,.3))}
 @media (prefers-reduced-motion:reduce){.leaves{display:none}}
 
 @media (max-width:640px){
@@ -419,6 +425,31 @@ function forceClose(){
   buildTabs();
   render();
 }
+
+// ===== 楓葉堆積：每片楓葉飄完一趟，就落一片在「送出訂單」按鈕上；堆滿或過一陣子整堆淡出重來 =====
+(function(){
+  const wrap=document.querySelector('.sub-wrap'); if(!wrap) return;
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const pile=document.createElement('div'); pile.className='pile'; wrap.insertBefore(pile, wrap.firstChild);
+  const leafSvg=document.querySelector('.leaf svg'); if(!leafSvg) return;
+  const fills=['url(#lf1)','url(#lf2)','url(#lf3)'];
+  const MAX=14, LIFE=45000; let n=0, timer=null;
+  function clear(){ pile.classList.add('fade'); setTimeout(()=>{ pile.innerHTML=''; n=0; pile.classList.remove('fade'); }, 1700); timer=null; }
+  function drop(){
+    if(pile.classList.contains('fade')) return;
+    const el=document.createElement('div'); el.className='pl';
+    const w=pile.clientWidth||300;
+    const x=Math.random()*(w-24), y=Math.random()*14-4, r=Math.random()*80-40;
+    el.style.left=x+'px'; el.style.top=(y-40)+'px'; el.style.transform='rotate('+r+'deg)';
+    const s=leafSvg.cloneNode(true); s.querySelector('path').setAttribute('fill', fills[n%3]); el.appendChild(s);
+    pile.appendChild(el);
+    requestAnimationFrame(()=>{ el.style.top=y+'px'; });   // 從上方輕輕落下
+    n++;
+    if(!timer) timer=setTimeout(clear, LIFE);
+    if(n>=MAX) clear();
+  }
+  document.querySelectorAll('.leaf').forEach(l=>l.addEventListener('animationiteration', drop));
+})();
 </script>
 </body>
 </html>

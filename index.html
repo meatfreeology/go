@@ -38,6 +38,9 @@ td{padding:12px 10px;vertical-align:top}
 .iname{font-weight:600;color:#8a3d0f;font-size:1rem;line-height:1.3}
 .icat{display:inline-block;color:#888;font-size:.72rem;margin-top:4px}
 .idesc{color:#444;font-size:.88rem;margin-top:5px;line-height:1.6}
+.itag{display:inline-block;background:#e3f0fb;color:#1b5e9e;font-size:.7rem;padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:middle;font-weight:600;white-space:nowrap}
+.tab.zone{color:#1b5e9e}
+.tab.zone.on{color:#1b5e9e;border-bottom-color:#1b5e9e}
 .inote{display:inline-block;background:#fff8e1;color:#9a6700;padding:3px 7px;border-radius:5px;margin-top:5px;font-size:.82rem;line-height:1.5}
 .iprice{color:#c0392b;font-size:.88rem;margin-bottom:6px;font-weight:500}
 .qty{width:100%;padding:10px 4px;text-align:center;border:1.5px solid #ccc;border-radius:8px;font-size:1.1rem}
@@ -207,6 +210,11 @@ apiGet('items')
   .catch(()=>{document.getElementById('tb').innerHTML='<tr><td colspan="3" class="empty">載入失敗，請重新整理頁面</td></tr>';});
 
 
+const TAG_PREFIX='#tag:';
+function tagParts(t){ const s=String(t||'').trim(); if(!s) return null; const [zone,badge]=s.split(/[\/／]/).map(x=>x.trim()); return {zone, badge: badge||zone}; }
+function zoneList(){ const seen=[]; visibleItems().forEach(i=>{ const t=tagParts(i.tag); if(t && !seen.includes(t.zone)) seen.push(t.zone); }); return seen; }
+function isZone(c){ return typeof c==='string' && c.startsWith(TAG_PREFIX); }
+
 function visibleItems(){
   return all.filter(i=>!HIDDEN.includes(i.category));
 }
@@ -214,13 +222,15 @@ function visibleItems(){
 function buildTabs(){
   const ORDER=['當月新品','當月特惠','熱門膠囊','眼睛專區','健腦益智','關節骨骼','感冒咳嗽(呼吸系統)','面部保養','零零嘴嘴','外用專區','婦科專區'];
   const rawCats=[...new Set(visibleItems().map(i=>i.category).filter(Boolean))];
+  const zones=zoneList().map(z=>TAG_PREFIX+z);          // 有標籤的品項自動長出專區，排最前面
   const cats=[
+    ...zones,
     ...ORDER.filter(c=>rawCats.includes(c)),
     ...rawCats.filter(c=>!ORDER.includes(c))
   ];
-  if(!curCat || !cats.includes(curCat)) curCat = cats[0] || '';   
+  if(!curCat || !cats.includes(curCat)) curCat = cats[0] || '';
   document.getElementById('tabs').innerHTML=
-    cats.map(c=>`<div class="tab${c===curCat?' on':''}" onclick="sc(this,'${c}')">${c}</div>`).join('');
+    cats.map(c=>`<div class="tab${isZone(c)?' zone':''}${c===curCat?' on':''}" onclick="sc(this,'${c}')">${isZone(c)?c.slice(TAG_PREFIX.length):c}</div>`).join('');
 }
 
 function sc(el,cat){
@@ -253,10 +263,13 @@ function render(){
       (it.name||'').toLowerCase().includes(k) ||
       (it.desc||'').toLowerCase().includes(k) ||
       (it.note||'').toLowerCase().includes(k) ||
-      (it.category||'').toLowerCase().includes(k)
+      (it.category||'').toLowerCase().includes(k) ||
+      (it.tag||'').toLowerCase().includes(k)
     );
   }else{
-    list=base.filter(i=>i.category===curCat);
+    list=isZone(curCat)
+      ? base.filter(i=>{ const t=tagParts(i.tag); return t && t.zone===curCat.slice(TAG_PREFIX.length); })
+      : base.filter(i=>i.category===curCat);
   }
 
   if(!list.length){
@@ -270,8 +283,8 @@ function render(){
     return `
     <tr>
       <td>
-        <div class="iname">${it.name}</div>
-        ${keyword?`<div class="icat">${it.category||''}</div>`:''}
+        <div class="iname">${it.name}${tagParts(it.tag)?`<span class="itag">${tagParts(it.tag).badge}</span>`:''}</div>
+        ${(keyword||isZone(curCat))?`<div class="icat">${it.category||''}</div>`:''}
         ${it.note?`<div class="inote">⚠️ ${it.note}</div>`:''}
       </td>
       <td><div class="idesc">${(it.desc||'').replace(/\n/g,'<br>')}</div></td>

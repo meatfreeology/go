@@ -135,7 +135,26 @@ td{padding:12px 10px;vertical-align:top}
 .flake>span.swept{animation:sweptFlake 2.6s cubic-bezier(.25,.1,.55,1) forwards}
 .pile .pl.fly{animation:pileAway 1.7s cubic-bezier(.3,.05,.6,1) forwards}
 @keyframes pileAway{0%{opacity:1}100%{transform:translate(70vw,-28vh) rotate(560deg);opacity:0}}
-@media (prefers-reduced-motion:reduce){.leaves{display:none}}
+/* 掛在分類列上的楓葉：每 15 秒一陣風掃過分類列，葉子就往下掉，過一會兒再掛回來 */
+.perch{position:absolute;left:14px;right:14px;top:-8px;height:0;pointer-events:none;z-index:21}
+.pleaf{position:absolute;bottom:0;width:22px;height:24px;transition:opacity .9s}
+.pleaf>span{display:block;width:100%;height:100%}
+.pleaf svg{width:100%;height:100%;display:block;filter:drop-shadow(0 1px 1px rgba(80,40,10,.3))}
+.pleaf:nth-child(1){left:10%}.pleaf:nth-child(1)>span{transform:rotate(-18deg)}
+.pleaf:nth-child(2){left:47%}.pleaf:nth-child(2)>span{transform:rotate(14deg) scaleX(-1)}
+.pleaf:nth-child(3){left:82%}.pleaf:nth-child(3)>span{transform:rotate(-32deg)}
+.pleaf.hidden{opacity:0}
+.pleaf.drop{animation:perchDrop 3.4s cubic-bezier(.3,.1,.6,1) forwards}
+@keyframes perchDrop{0%{transform:translate(0,0) rotate(0deg);opacity:1}60%{opacity:1}100%{transform:translate(28vw,96vh) rotate(400deg);opacity:0}}
+.catwind{position:absolute;left:0;right:0;top:-12px;height:44px;pointer-events:none;opacity:0;z-index:22;animation:catWindFlow 15s linear infinite;animation-delay:4s}
+.catwind svg{width:100%;height:100%;display:block;overflow:visible;filter:blur(.3px)}
+.catwind path{fill:none;stroke:#9a6a48;stroke-linecap:round;stroke-linejoin:round;stroke-dashoffset:var(--s);animation:catWindRun 15s cubic-bezier(.35,.05,.55,.95) infinite;animation-delay:4s}
+.catwind .w1{stroke-width:1.1;opacity:.8;stroke-dasharray:150 3000}
+.catwind .w2{stroke-width:2.2;opacity:.35;stroke-dasharray:85 3000}
+.catwind .w3{stroke-width:3.4;opacity:.16;stroke-dasharray:40 3000}
+@keyframes catWindFlow{0%{opacity:0}3%{opacity:1}19%{opacity:1}23%{opacity:0}100%{opacity:0}}
+@keyframes catWindRun{0%{stroke-dashoffset:var(--s)}22%{stroke-dashoffset:var(--e)}100%{stroke-dashoffset:var(--e)}}
+@media (prefers-reduced-motion:reduce){.leaves{display:none}.perch,.catwind{display:none}}
 
 @media (max-width:640px){
   .tbl{margin:12px;background:transparent;box-shadow:none;border-radius:0;overflow:visible}
@@ -178,6 +197,8 @@ td{padding:12px 10px;vertical-align:top}
 <div class="catbar" id="catbar">
   <button type="button" class="catbtn" id="catbtn" onclick="toggleMenu()"><span id="catName">載入中…</span><span class="caret"><span>▲</span><span>▼</span></span></button>
   <div class="catmenu" id="catmenu"></div>
+  <div class="perch" id="perch" aria-hidden="true"><div class="pleaf"><span><svg viewBox="2868 900 3844 4216" xmlns="http://www.w3.org/2000/svg"><path fill="url(#lf1)" d="m4800 900-338 661c-38 68-107 62-176 24l-244-127 182 968c38 178-86 178-147 100l-424-476-68 240c-8 32-43 66-96 58l-539-113 141 514c30 114 54 162-31 192l-192 90 927 753c37 28 55 80 42 126l-81 266c319-37 604-93 924-117 28-2 76 44 75 78l-42 979h139l-24-978c-1-34 44-80 72-78 320 24 605 80 924 117l-81-266c-13-46 5-98 42-126l927-753-192-90c-85-30-61-78-31-192l141-514-539 113c-53 8-88-26-96-58l-68-240-424 476c-61 78-185 78-147-100l182-968-244 127c-69 38-138 44-176-24z"/></svg></span></div><div class="pleaf"><span><svg viewBox="2868 900 3844 4216" xmlns="http://www.w3.org/2000/svg"><path fill="url(#lf2)" d="m4800 900-338 661c-38 68-107 62-176 24l-244-127 182 968c38 178-86 178-147 100l-424-476-68 240c-8 32-43 66-96 58l-539-113 141 514c30 114 54 162-31 192l-192 90 927 753c37 28 55 80 42 126l-81 266c319-37 604-93 924-117 28-2 76 44 75 78l-42 979h139l-24-978c-1-34 44-80 72-78 320 24 605 80 924 117l-81-266c-13-46 5-98 42-126l927-753-192-90c-85-30-61-78-31-192l141-514-539 113c-53 8-88-26-96-58l-68-240-424 476c-61 78-185 78-147-100l182-968-244 127c-69 38-138 44-176-24z"/></svg></span></div><div class="pleaf"><span><svg viewBox="2868 900 3844 4216" xmlns="http://www.w3.org/2000/svg"><path fill="url(#lf3)" d="m4800 900-338 661c-38 68-107 62-176 24l-244-127 182 968c38 178-86 178-147 100l-424-476-68 240c-8 32-43 66-96 58l-539-113 141 514c30 114 54 162-31 192l-192 90 927 753c37 28 55 80 42 126l-81 266c319-37 604-93 924-117 28-2 76 44 75 78l-42 979h139l-24-978c-1-34 44-80 72-78 320 24 605 80 924 117l-81-266c-13-46 5-98 42-126l927-753-192-90c-85-30-61-78-31-192l141-514-539 113c-53 8-88-26-96-58l-68-240-424 476c-61 78-185 78-147-100l182-968-244 127c-69 38-138 44-176-24z"/></svg></span></div></div>
+  <div class="catwind"><svg viewBox="0 0 600 50" xmlns="http://www.w3.org/2000/svg"><path class="w3" style="--s:150;--e:-620" d="M2 30 C 60 10, 120 8, 180 24 C 215 34, 240 24, 232 12 C 224 2, 206 8, 212 22 C 222 40, 270 36, 330 26 C 400 16, 480 16, 598 28"/><path class="w2" style="--s:120;--e:-650" d="M2 30 C 60 10, 120 8, 180 24 C 215 34, 240 24, 232 12 C 224 2, 206 8, 212 22 C 222 40, 270 36, 330 26 C 400 16, 480 16, 598 28"/><path class="w1" style="--s:150;--e:-680" d="M2 30 C 60 10, 120 8, 180 24 C 215 34, 240 24, 232 12 C 224 2, 206 8, 212 22 C 222 40, 270 36, 330 26 C 400 16, 480 16, 598 28"/></svg></div>
 </div>
 <div class="catbd" id="catbd" onclick="toggleMenu(false)"></div>
 <div class="cat-tip">👆 點一下選分類</div>
@@ -543,6 +564,26 @@ function forceClose(){
   }
   const w0=winds[0];
   w0.addEventListener('animationstart', gust); w0.addEventListener('animationiteration', gust);
+})();
+
+// ===== 分類列上的楓葉：每 15 秒一陣風掃過分類列，三片葉子依序被吹落，幾秒後再掛回來 =====
+(function(){
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cw=document.querySelector('.catwind'); if(!cw) return;
+  function blowPerch(){
+    const leaves=[...document.querySelectorAll('.pleaf')]; const vw=window.innerWidth||375;
+    leaves.forEach(el=>{
+      if(el.classList.contains('drop') || el.classList.contains('hidden')) return;
+      const r=el.getBoundingClientRect(); const wait=300 + Math.max(0, r.left/vw)*2400;   // 風由左到右，依序落下
+      setTimeout(()=>{
+        el.classList.add('drop');
+        setTimeout(()=>{ el.classList.remove('drop'); el.classList.add('hidden');
+          setTimeout(()=>el.classList.remove('hidden'), 4500 + Math.random()*2500);   // 過一會兒再掛回來
+        }, 3500);
+      }, wait);
+    });
+  }
+  cw.addEventListener('animationstart', blowPerch); cw.addEventListener('animationiteration', blowPerch);
 })();
 </script>
 </body>

@@ -316,6 +316,8 @@ function render(){
     );
   }else{
     list=itemsForTab(curCat);
+    // 入冬必備的品項排在每一頁最上面，其餘照原本順序
+    list=[...list.filter(isPromo), ...list.filter(it=>!isPromo(it))];
   }
 
   if(!list.length){

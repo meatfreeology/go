@@ -18,14 +18,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f6f0ea;
 .search-wrap{position:relative}
 .search-wrap .clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);border:none;background:#eee;color:#777;width:26px;height:26px;border-radius:50%;font-size:1rem;cursor:pointer;display:none;line-height:1}
 .search-wrap .clear.show{display:block}
-.tabs{display:flex;overflow-x:auto;background:#fff;padding:4px 8px 0;border-bottom:1.5px solid #eee;gap:2px;touch-action:pan-x;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scroll-behavior:auto}
-.tabs.dim .tab{opacity:.45}
-.tabs::-webkit-scrollbar{display:none}
-.tab{padding:12px 16px;font-size:.9rem;color:#888;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;white-space:nowrap;flex-shrink:0}
-.tab.on{color:#d5641f;border-bottom-color:#d5641f;font-weight:600}
-.tabs-wrap{position:sticky;top:0;z-index:20;background:#fff}   /* 分類列固定在最上面，往下滑也看得到 */
-.tabs-wrap::after{content:"";position:absolute;top:0;right:0;bottom:0;width:34px;pointer-events:none;background:linear-gradient(to right,rgba(255,255,255,0),#fff)}
-.swipe-tip{font-size:.74rem;color:#9a9a9a;text-align:center;padding:7px 12px 0}
+/* 分類選單：固定在最上面的一條，點一下從這裡往下展開，所有分類一次看完 */
+.catbar{position:sticky;top:0;z-index:20;background:#fff;padding:8px 12px;border-bottom:1.5px solid #eee}
+.catbar.dim .catbtn{opacity:.45}
+.catbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 14px;border:none;border-radius:12px;background:#e3f0fb;color:#1b5e9e;font-size:1.05rem;font-weight:700;cursor:pointer;font-family:inherit}
+.catbtn .caret{display:flex;flex-direction:column;line-height:.55;font-size:.62rem;color:#4a90d9}
+.catbtn.open{background:#4a90d9;color:#fff}.catbtn.open .caret{color:#fff}
+.catmenu{display:none;position:absolute;left:0;right:0;top:100%;background:#fff;padding:10px 12px 14px;box-shadow:0 12px 26px rgba(0,0,0,.16);border-radius:0 0 18px 18px;flex-wrap:wrap;gap:8px;max-height:calc(100vh - 90px);overflow:auto}
+.catmenu.open{display:flex}
+.catopt{flex:1 1 calc(50% - 8px);padding:12px 8px;text-align:center;border:1.5px solid #e8e2db;border-radius:12px;font-size:.95rem;color:#444;background:#fff;cursor:pointer}
+.catopt.on{border-color:#4a90d9;background:#e3f0fb;color:#1b5e9e;font-weight:700}
+.catopt.zone{flex-basis:100%;border-color:#bcd8f3;background:#eef6fd;color:#1b5e9e;font-weight:700}
+.catopt.zone.on{background:#4a90d9;color:#fff;border-color:#4a90d9}
+.catbd{display:none;position:fixed;inset:0;z-index:19;background:rgba(0,0,0,.18)}
+.catbd.open{display:block}
+.cat-tip{font-size:.74rem;color:#9a9a9a;text-align:center;padding:7px 12px 0}
 .tbl{margin:12px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 table{width:100%;border-collapse:collapse;table-layout:fixed}
 col.c1{width:34%}col.c2{width:46%}col.c3{width:20%}
@@ -39,8 +46,6 @@ td{padding:12px 10px;vertical-align:top}
 .icat{display:inline-block;color:#888;font-size:.72rem;margin-top:4px}
 .idesc{color:#444;font-size:.88rem;margin-top:5px;line-height:1.6}
 .itag{display:inline-block;background:#e3f0fb;color:#1b5e9e;font-size:.7rem;padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:middle;font-weight:600;white-space:nowrap}
-.tab.zone{color:#1b5e9e;background:#e3f0fb;border-radius:999px;padding:7px 14px;margin:5px 6px 7px 4px;align-self:center;border-bottom:none;font-weight:600}   /* 入冬必備頁籤：粉藍底 */
-.tab.zone.on{color:#fff;background:#4a90d9;border-bottom:none}
 .inote{display:inline-block;background:#fff8e1;color:#9a6700;padding:3px 7px;border-radius:5px;margin-top:5px;font-size:.82rem;line-height:1.5}
 .iprice{color:#c0392b;font-size:.88rem;margin-bottom:6px;font-weight:500}
 .qty{width:100%;padding:10px 4px;text-align:center;border:1.5px solid #ccc;border-radius:8px;font-size:1.1rem}
@@ -166,10 +171,12 @@ td{padding:12px 10px;vertical-align:top}
   </div>
 </div>
 
-<div class="tabs-wrap">
-  <div class="tabs" id="tabs"></div>
+<div class="catbar" id="catbar">
+  <button type="button" class="catbtn" id="catbtn" onclick="toggleMenu()"><span id="catName">載入中…</span><span class="caret"><span>▲</span><span>▼</span></span></button>
+  <div class="catmenu" id="catmenu"></div>
 </div>
-<div class="swipe-tip">👈 左右滑動切換分類 👉</div>
+<div class="catbd" id="catbd" onclick="toggleMenu(false)"></div>
+<div class="cat-tip">👆 點一下選分類</div>
 
 <div class="tbl">
   <table>
@@ -280,20 +287,33 @@ function buildTabs(){
     ...rawCats.filter(c=>!ORDER.includes(c))
   ];
   if(!curCat || !cats.includes(curCat)) curCat = cats[0] || '';
-  document.getElementById('tabs').innerHTML=
-    cats.map(c=>`<div class="tab${c===PROMO_TAB?' zone':''}${c===curCat?' on':''}" onclick="sc(this,'${c}')">${c}</div>`).join('');
+  renderCatMenu(cats);
 }
 
+function renderCatMenu(cats){
+  document.getElementById('catName').textContent=(curCat===PROMO_TAB?'❄️ ':'')+curCat;
+  document.getElementById('catmenu').innerHTML=
+    cats.map(c=>`<div class="catopt${c===PROMO_TAB?' zone':''}${c===curCat?' on':''}" onclick="sc(this,'${c}')">${c===PROMO_TAB?'❄️ ':''}${c}</div>`).join('');
+}
+function toggleMenu(force){
+  const m=document.getElementById('catmenu'), bd=document.getElementById('catbd'), btn=document.getElementById('catbtn');
+  const open = (force===undefined) ? !m.classList.contains('open') : !!force;
+  m.classList.toggle('open',open); bd.classList.toggle('open',open); btn.classList.toggle('open',open);
+}
 function sc(el,cat){
-  clearSearch(true);               // 點分頁時清掉搜尋
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
-  el.classList.add('on'); curCat=cat; render();
+  clearSearch(true);               // 選分類時清掉搜尋
+  document.querySelectorAll('.catopt').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on'); curCat=cat;
+  document.getElementById('catName').textContent=(cat===PROMO_TAB?'❄️ ':'')+cat;
+  toggleMenu(false);
+  render();
+  window.scrollTo({top: Math.max(0, document.getElementById('catbar').offsetTop-4), behavior:'auto'});   // 切換後從清單頂端看起
 }
 
 function onSearch(v){
   keyword=v.trim();
   document.getElementById('clearBtn').classList.toggle('show', keyword.length>0);
-  document.getElementById('tabs').classList.toggle('dim', keyword.length>0);
+  document.getElementById('catbar').classList.toggle('dim', keyword.length>0);
   render();
 }
 
@@ -301,7 +321,7 @@ function clearSearch(skipRender){
   keyword='';
   document.getElementById('search').value='';
   document.getElementById('clearBtn').classList.remove('show');
-  document.getElementById('tabs').classList.remove('dim');
+  document.getElementById('catbar').classList.remove('dim');
   if(!skipRender) render();
 }
 

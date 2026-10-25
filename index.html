@@ -27,6 +27,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f6f0ea;
 .catbtn.promo{background:#e3f0fb;color:#1b5e9e}.catbtn.promo .caret{color:#4a90d9}
 .catbtn.promo.open{background:#4a90d9;color:#fff}.catbtn.promo.open .caret{color:#fff}
 .cico{width:1.15em;height:.9em;vertical-align:-.12em;display:inline-block}
+.mf{font-weight:800;letter-spacing:-1px}
+.mf::first-letter{color:#d64b8a}
 .catmenu{display:none;position:absolute;left:0;right:0;top:100%;background:#fff;padding:8px 12px 12px;box-shadow:0 12px 26px rgba(0,0,0,.16);border-radius:0 0 18px 18px;flex-wrap:wrap;gap:8px;max-height:calc(100vh - 90px);overflow:auto}
 .catmenu.open{display:flex}
 .catopt{flex:1 1 calc(50% - 8px);padding:10px 8px;text-align:center;border:1.5px solid #e8e2db;border-radius:12px;font-size:.95rem;color:#444;background:#fff;cursor:pointer}
@@ -294,7 +296,7 @@ function buildTabs(){
 }
 
 // 分類圖示：只有入冬必備是藍色，其他分類用頁面原本的橘色系
-const CAT_ICON={'入冬必備':'❄️','入冬專區':'❄️','眼睛專區':'👁️','關節筋骨':'🦴','關節骨骼':'🦴','耳鼻喉感冒':'👃','健腦益智':'🧠','心血管循環':'🫀','身體輕盈':'⚖️','肝膽腸胃':'<svg class="cico" viewBox="0 0 64 48" xmlns="http://www.w3.org/2000/svg"><path d="M4 20 C 6 8, 24 4, 36 8 C 48 10, 60 14, 60 24 C 60 34, 48 42, 36 40 C 26 38, 20 44, 12 38 C 4 32, 2 28, 4 20 Z" fill="#b5533a"/><path d="M12 18 C 16 12, 28 10, 36 13" fill="none" stroke="#e0866c" stroke-width="3" stroke-linecap="round"/></svg>'};
+const CAT_ICON={'入冬必備':'❄️','入冬專區':'❄️','眼睛專區':'👁️','關節筋骨':'🦴','關節骨骼':'🦴','耳鼻喉感冒':'👃','健腦益智':'🧠','心血管循環':'🫀','身體輕盈':'<svg class="cico" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="52" height="52" rx="12" fill="#e9b98a" stroke="#b8763f" stroke-width="3"/><rect x="17" y="13" width="30" height="15" rx="4" fill="#fff" stroke="#b8763f" stroke-width="2.5"/><path d="M32 26 L36 17" stroke="#c0392b" stroke-width="3" stroke-linecap="round"/><circle cx="24" cy="44" r="3" fill="#b8763f"/><circle cx="40" cy="44" r="3" fill="#b8763f"/></svg>','熱門膠囊':'🔥','零零嘴嘴':'🍬','面部保養':'💄','男女專區':'<span class="mf">♀♂</span>','肝膽腸胃':'<svg class="cico" viewBox="0 0 64 48" xmlns="http://www.w3.org/2000/svg"><path d="M4 20 C 6 8, 24 4, 36 8 C 48 10, 60 14, 60 24 C 60 34, 48 42, 36 40 C 26 38, 20 44, 12 38 C 4 32, 2 28, 4 20 Z" fill="#b5533a"/><path d="M12 18 C 16 12, 28 10, 36 13" fill="none" stroke="#e0866c" stroke-width="3" stroke-linecap="round"/></svg>'};
 function catLabel(c){ const ic=CAT_ICON[c]; return (ic?ic+' ':'')+c; }
 function renderCatMenu(cats){
   setCatName(curCat);

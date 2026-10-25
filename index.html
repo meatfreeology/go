@@ -144,9 +144,11 @@ td{padding:12px 10px;vertical-align:top}
 .pleaf:nth-child(2){left:47%}.pleaf:nth-child(2)>span{transform:rotate(14deg) scaleX(-1)}
 .pleaf:nth-child(3){left:82%}.pleaf:nth-child(3)>span{transform:rotate(-32deg)}
 .pleaf.hidden{opacity:0}
+.pleaf.land{animation:perchLand 3s cubic-bezier(.25,.6,.4,1) forwards}
+@keyframes perchLand{0%{transform:translate(-10vw,-55vh) rotate(-220deg);opacity:0}8%{opacity:1}55%{transform:translate(4vw,-14vh) rotate(-60deg)}100%{transform:translate(0,0) rotate(0deg);opacity:1}}
 .pleaf.drop{animation:perchDrop 3.4s cubic-bezier(.3,.1,.6,1) forwards}
 @keyframes perchDrop{0%{transform:translate(0,0) rotate(0deg);opacity:1}60%{opacity:1}100%{transform:translate(28vw,96vh) rotate(400deg);opacity:0}}
-.catwind{position:absolute;left:0;right:0;top:-12px;height:44px;pointer-events:none;opacity:0;z-index:22;animation:catWindFlow 15s linear infinite;animation-delay:4s}
+.catwind{position:absolute;left:18%;width:64%;top:-12px;height:44px;transform:rotate(45deg);transform-origin:center;pointer-events:none;opacity:0;z-index:22;animation:catWindFlow 15s linear infinite;animation-delay:4s}
 .catwind svg{width:100%;height:100%;display:block;overflow:visible;filter:blur(.3px)}
 .catwind path{fill:none;stroke:#9a6a48;stroke-linecap:round;stroke-linejoin:round;stroke-dashoffset:var(--s);animation:catWindRun 15s cubic-bezier(.35,.05,.55,.95) infinite;animation-delay:4s}
 .catwind .w1{stroke-width:1.1;opacity:.8;stroke-dasharray:150 3000}
@@ -578,7 +580,8 @@ function forceClose(){
       setTimeout(()=>{
         el.classList.add('drop');
         setTimeout(()=>{ el.classList.remove('drop'); el.classList.add('hidden');
-          setTimeout(()=>el.classList.remove('hidden'), 4500 + Math.random()*2500);   // 過一會兒再掛回來
+          setTimeout(()=>{ el.classList.remove('hidden'); el.classList.add('land');            // 從上面掉下來、落回分類列
+            setTimeout(()=>el.classList.remove('land'), 3100); }, 1500 + Math.random()*2500);
         }, 3500);
       }, wait);
     });

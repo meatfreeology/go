@@ -238,26 +238,23 @@ apiGet('items')
 
 
 // ===== 入冬必備規則（不另開分頁） =====
-// 分類填「入冬必備」（或「入冬專區」）、旁邊「標籤」欄填它原本的分類（例：感冒咳嗽）
-//   → 品項出現在「感冒咳嗽」那一頁，品名旁掛藍色小標「入冬必備」。不會多出入冬的分頁。
-// 分類照舊、標籤填「入冬必備」 → 一樣留在原分類頁、掛小標。
-// 分類是入冬必備但標籤空白的品項沒有家，會暫時集中在一頁「入冬必備」，標籤補齊後那一頁自動消失。
+// 分類填「入冬必備」（或「入冬專區」）、旁邊「標籤」欄填它該出現的分類，可以填好幾個，用逗號或頓號隔開
+//   例：「肝膽腸胃, 身體輕盈, 面部保養」→ 這三頁都看得到它，品名旁掛藍色小標「入冬必備」
+// 標籤裡的分類名如果這一團還沒有別的品項，那一頁會自動長出來（它就是分類頁，不是額外的專區）
+// 分類照舊、標籤填「入冬必備」→ 留在原分類頁、掛小標
+// 分類是入冬必備但標籤空白的品項沒有家，暫時集中在一頁「入冬必備」，標籤補齊後那一頁自動消失
 const PROMO={'入冬必備':'入冬必備','入冬專區':'入冬必備'};
 const HOMELESS_TAB='入冬必備';
-function tagParts(t){ const s=String(t||'').trim(); if(!s) return null; const [zone,badge]=s.split(/[\/／]/).map(x=>x.trim()); return {zone, badge: badge||PROMO[zone]||zone}; }
-function catSet(){ return new Set(visibleItems().map(i=>i.category).filter(Boolean)); }
-function isPromo(it){ if(PROMO[it.category]) return true; const t=tagParts(it.tag); return !!(t && PROMO[t.zone]); }
-function homeCat(it){                       // 這個品項該出現在哪一頁
-  if(!PROMO[it.category]) return it.category;
-  const t=tagParts(it.tag); return (t && catSet().has(t.zone)) ? t.zone : null;
+function tagList(t){ return String(t||'').split(/[,，、;；|]/).map(x=>x.trim()).filter(Boolean); }
+function isPromo(it){ return !!PROMO[it.category] || tagList(it.tag).some(z=>PROMO[z]); }
+function homeCats(it){                      // 這個品項該出現在哪幾頁
+  if(!PROMO[it.category]) return it.category ? [it.category] : [];
+  return tagList(it.tag).filter(z=>!PROMO[z]);
 }
-function badgeOf(it){
-  if(PROMO[it.category]) return PROMO[it.category];
-  const t=tagParts(it.tag); return t ? t.badge : '';
-}
+function badgeOf(it){ return PROMO[it.category] || tagList(it.tag).map(z=>PROMO[z]).find(Boolean) || ''; }
 function itemsForTab(c){
-  if(c===HOMELESS_TAB) return visibleItems().filter(it=>PROMO[it.category] && !homeCat(it));
-  return visibleItems().filter(it=>homeCat(it)===c);
+  if(c===HOMELESS_TAB) return visibleItems().filter(it=>PROMO[it.category] && !homeCats(it).length);
+  return visibleItems().filter(it=>homeCats(it).includes(c));
 }
 
 function visibleItems(){
@@ -265,10 +262,9 @@ function visibleItems(){
 }
 
 function buildTabs(){
-  const ORDER=['當月新品','當月特惠','熱門膠囊','眼睛專區','健腦益智','關節骨骼','感冒咳嗽(呼吸系統)','面部保養','零零嘴嘴','外用專區','婦科專區'];
-  const homes=new Set(); visibleItems().forEach(it=>{ const h=homeCat(it); if(h) homes.add(h); });
-  const rawCats=[...homes];
-  const homeless=visibleItems().some(it=>PROMO[it.category] && !homeCat(it));   // 入冬品項還沒填原分類 → 暫放一頁
+  const ORDER=['當月新品','當月特惠','熱門膠囊','眼睛專區','健腦益智','關節骨骼','關節筋骨','感冒咳嗽(呼吸系統)','感冒咳嗽','耳鼻喉感冒','面部保養','零零嘴嘴','外用專區','婦科專區'];
+  const rawCats=[]; visibleItems().forEach(it=>homeCats(it).forEach(c=>{ if(!rawCats.includes(c)) rawCats.push(c); }));
+  const homeless=visibleItems().some(it=>PROMO[it.category] && !homeCats(it).length);   // 入冬品項還沒填分類 → 暫放一頁
   const cats=[
     ...(homeless?[HOMELESS_TAB]:[]),
     ...ORDER.filter(c=>rawCats.includes(c)),
@@ -328,7 +324,7 @@ function render(){
     <tr>
       <td>
         <div class="iname">${(isPromo(it) && curCat!==HOMELESS_TAB)?`<span class="itag">${badgeOf(it)}</span>`:''}${it.name}</div>
-        ${keyword?`<div class="icat">${homeCat(it)||it.category||''}</div>`:''}
+        ${keyword?`<div class="icat">${homeCats(it).join('・')||it.category||''}</div>`:''}
         ${it.note?`<div class="inote">⚠️ ${it.note}</div>`:''}
       </td>
       <td><div class="idesc">${(it.desc||'').replace(/\n/g,'<br>')}</div></td>

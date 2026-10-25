@@ -263,6 +263,9 @@ function itemsForTab(c){
   return visibleItems().filter(it=>homeCats(it).includes(c));
 }
 
+// 顯示用：品名外面一律加【】；表裡本來就有的就不重複加。送單用的還是原本的品名。
+function dispName(n){ n=String(n||''); return /^【.*】$/.test(n)?n:'【'+n.replace(/^【|】$/g,'')+'】'; }
+
 function visibleItems(){
   return all.filter(i=>!HIDDEN.includes(i.category));
 }
@@ -331,7 +334,7 @@ function render(){
     return `
     <tr>
       <td>
-        <div class="iname">${(isPromo(it) && curCat!==PROMO_TAB)?`<span class="itag">${badgeOf(it)}</span>`:''}${it.name}</div>
+        <div class="iname">${(isPromo(it) && curCat!==PROMO_TAB)?`<span class="itag">${badgeOf(it)}</span>`:''}${dispName(it.name)}</div>
         ${(keyword||curCat===PROMO_TAB)?`<div class="icat">${homeCats(it).join('・')||it.category||''}</div>`:''}
         ${it.note?`<div class="inote">⚠️ ${it.note}</div>`:''}
       </td>
@@ -394,7 +397,7 @@ function renderReview(){
   listEl.innerHTML=names.map(n=>{
     const info=infoOf(n), q=qtyMap[n], amt=q*info.price; total+=amt;
     return '<div class="rv-item">'
-      +'<div class="nm">'+n+'<div class="pr">$'+info.price+'／'+info.unit+'</div></div>'
+      +'<div class="nm">'+dispName(n)+'<div class="pr">$'+info.price+'／'+info.unit+'</div></div>'
       +'<div class="rv-step">'
         +'<button class="dec" data-name="'+n+'">−</button>'
         +'<span class="n">'+q+'</span>'

@@ -608,7 +608,7 @@ function showClosed(deadline){
   const box=document.createElement('div'); box.className='closed-card';
   box.innerHTML='<div class="big">🍂 本團已結單</div>'
     +'<div class="closed-sub">'+(deadline?('結單時間：<b>'+deadline+'</b><br>'):'')
-    +'還想下單的話，請跟<b>小幫手</b>說一聲～<br>小幫手開放後再回來這一頁就可以囉</div>';
+    +'有任何問題，歡迎敲<b>小幫手</b>~謝謝您~</div>';
   const anchor=document.querySelector('.card'); anchor.parentNode.insertBefore(box, anchor);
 }
 </script>

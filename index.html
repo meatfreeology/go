@@ -267,8 +267,10 @@ function apiPost(payload){
 apiGet('items')
   .then(d=>{
     if(!d || !d.ok) throw new Error(d && d.error || 'bad response');
-    document.getElementById('period').textContent = d.name;
-    if(d.open===false){ showClosed(d.deadline); return; }       // 已結單：不顯示品項、不能送單
+    const FALLBACK_DEADLINE = (d.name==='10/26-11/05') ? '11/5 下午14:00' : '';   // 後端沒給結單時間時，這一團先這樣顯示
+    const dl = d.deadline || FALLBACK_DEADLINE;
+    document.getElementById('period').textContent = d.name + (dl ? '　⏰ 結單 ' + dl : '');
+    if(d.open===false){ showClosed(dl); return; }       // 已結單：不顯示品項、不能送單
     all=d.items; buildTabs(); render();
   })
   .catch(()=>{document.getElementById('tb').innerHTML='<tr><td colspan="3" class="empty">載入失敗，請重新整理頁面</td></tr>';});

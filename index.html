@@ -147,6 +147,12 @@ td{padding:12px 10px;vertical-align:top}
 .catwind .w3{stroke-width:3.4;opacity:.16;stroke-dasharray:40 3000}
 @keyframes catWindFlow{0%{opacity:0}3%{opacity:1}19%{opacity:1}23%{opacity:0}100%{opacity:0}}
 @keyframes catWindRun{0%{stroke-dashoffset:var(--s)}22%{stroke-dashoffset:var(--e)}100%{stroke-dashoffset:var(--e)}}
+/* 已結單提示 */
+.closed-card{margin:12px;background:#fff;border:2px dashed #e0a877;border-radius:16px;padding:26px 18px;text-align:center}
+.closed-card .big{font-size:1.25rem;font-weight:700;color:#8a3d0f;margin-bottom:10px}
+.closed-card .sub{font-size:.95rem;color:#555;line-height:1.8}
+.closed-card .sub b{color:#d5641f}
+body.closed .catbar,body.closed .cat-tip,body.closed .tbl,body.closed .cart-bar,body.closed .sub-wrap,body.closed .card{display:none}
 @media (prefers-reduced-motion:reduce){.leaves{display:none}.perch,.catwind{display:none}}
 
 @media (max-width:640px){
@@ -262,6 +268,7 @@ apiGet('items')
   .then(d=>{
     if(!d || !d.ok) throw new Error(d && d.error || 'bad response');
     document.getElementById('period').textContent = d.name;
+    if(d.open===false){ showClosed(d.deadline); return; }       // 已結單：不顯示品項、不能送單
     all=d.items; buildTabs(); render();
   })
   .catch(()=>{document.getElementById('tb').innerHTML='<tr><td colspan="3" class="empty">載入失敗，請重新整理頁面</td></tr>';});
@@ -594,6 +601,16 @@ function forceClose(){
   }
   cw.addEventListener('animationstart', blowPerch); cw.addEventListener('animationiteration', blowPerch);
 })();
+
+// 結單後的畫面：只留標題與提示，想補單請找小幫手
+function showClosed(deadline){
+  document.body.classList.add('closed');
+  const box=document.createElement('div'); box.className='closed-card';
+  box.innerHTML='<div class="big">🍂 本團已結單</div>'
+    +'<div class="sub">'+(deadline?('結單時間：<b>'+deadline+'</b><br>'):'')
+    +'還想下單的話，請跟<b>小幫手</b>說一聲～<br>小幫手開放後再回來這一頁就可以囉</div>';
+  const anchor=document.querySelector('.card'); anchor.parentNode.insertBefore(box, anchor);
+}
 </script>
 </body>
 </html>

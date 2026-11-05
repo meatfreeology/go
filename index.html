@@ -150,8 +150,8 @@ td{padding:12px 10px;vertical-align:top}
 /* 已結單提示 */
 .closed-card{margin:12px;background:#fff;border:2px dashed #e0a877;border-radius:16px;padding:26px 18px;text-align:center}
 .closed-card .big{font-size:1.25rem;font-weight:700;color:#8a3d0f;margin-bottom:10px}
-.closed-card .sub{font-size:.95rem;color:#555;line-height:1.8}
-.closed-card .sub b{color:#d5641f}
+.closed-card .closed-sub{font-size:.95rem;color:#555;line-height:1.8}
+.closed-card .closed-sub b{color:#d5641f}
 body.closed .catbar,body.closed .cat-tip,body.closed .tbl,body.closed .cart-bar,body.closed .sub-wrap,body.closed .card{display:none}
 @media (prefers-reduced-motion:reduce){.leaves{display:none}.perch,.catwind{display:none}}
 
@@ -607,7 +607,7 @@ function showClosed(deadline){
   document.body.classList.add('closed');
   const box=document.createElement('div'); box.className='closed-card';
   box.innerHTML='<div class="big">🍂 本團已結單</div>'
-    +'<div class="sub">'+(deadline?('結單時間：<b>'+deadline+'</b><br>'):'')
+    +'<div class="closed-sub">'+(deadline?('結單時間：<b>'+deadline+'</b><br>'):'')
     +'還想下單的話，請跟<b>小幫手</b>說一聲～<br>小幫手開放後再回來這一頁就可以囉</div>';
   const anchor=document.querySelector('.card'); anchor.parentNode.insertBefore(box, anchor);
 }
